@@ -1,10 +1,7 @@
-import {Kafka} from "kafkajs";
+import { Kafka } from "kafkajs";
 import axios from "axios";
 
-
 const API_KEY = 'abb48788c13f44439be80458242106';
-const API_URL = `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=Passavant`;
-
 
 const kafka = new Kafka({
     clientId: 'weather-producer',
@@ -13,7 +10,9 @@ const kafka = new Kafka({
 
 const producer = kafka.producer();
 
-const run = async () => {
+const run = async (city: string) => {
+    const API_URL = `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}`;
+    await producer.disconnect();
     await producer.connect();
     while (true) {
         try {
@@ -31,8 +30,9 @@ const run = async () => {
     }
 };
 
-run().catch(e => {
-    console.error(`[example/producer] ${e.message}`, e);
-}).finally(async () => {
+const stop = async () => {
     await producer.disconnect();
-});
+    console.log("disconnect");
+};
+
+export { run, stop };

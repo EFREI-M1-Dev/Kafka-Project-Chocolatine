@@ -1,3 +1,5 @@
+// monitor-weather.ts
+
 import { Kafka } from 'kafkajs';
 
 interface Weather {
@@ -55,7 +57,7 @@ const kafka = new Kafka({
 
 const consumer = kafka.consumer({ groupId: 'weather-group' });
 
-const run = async () => {
+export const startWeatherConsumer = async () => {
     await consumer.connect();
     await consumer.subscribe({ topic: 'weather', fromBeginning: true });
 
@@ -68,7 +70,6 @@ const run = async () => {
                 const condition = weatherData.current.condition.text;
 
                 console.log(`Received weather update for ${location}: ${tempC}°C, ${condition}`);
-                // Ajoutez ici votre logique de traitement des données météo si nécessaire
 
             } catch (error) {
                 console.error('Error parsing or processing message:', error);
@@ -76,5 +77,3 @@ const run = async () => {
         },
     });
 };
-
-run().catch(e => console.error(`[weather-consumer] ${e.message}`, e));

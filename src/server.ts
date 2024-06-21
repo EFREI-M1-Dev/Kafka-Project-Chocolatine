@@ -4,9 +4,12 @@ import path from 'path';
 import {WebSocket, WebSocketServer} from 'ws';
 import {fileURLToPath} from 'url';
 import * as http from "http";
+import { run, stop } from './get-weather.js';  // Importation des fonctions run et stop
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+let currentCity = 'Passavant'; // Ville par défaut
 
 const app = express();
 const port = 3000;
@@ -74,6 +77,18 @@ const wss = new WebSocketServer({noServer: true});
 
 wss.on('connection', function connection(ws) {
     console.log('WebSocket client connected');
+
+    ws.on('message', async function incoming(message) {
+        const city = message.toString();
+        if (city) {
+            currentCity = city;
+            await stop();
+
+            await run(city);
+        } else {
+            console.error('Received an invalid city name');
+        }
+    });
 });
 
 async function startConsumer() {
@@ -116,6 +131,8 @@ server.on('upgrade', function (request, socket, head) {
         wss.emit('connection', ws, request);
     });
 });
+
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 

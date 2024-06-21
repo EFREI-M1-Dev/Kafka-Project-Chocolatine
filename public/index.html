@@ -3,9 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Dashboard</title>
     <style>
-        /* CSS styles for your UI */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .weather-card {
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .weather-card h2 {
+            margin-bottom: 10px;
+            color: #333333;
+        }
+
+        .weather-info {
+            text-align: left;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .weather-info p {
+            margin: 5px 0;
+            color: #666666;
+        }
+
+        .weather-info p strong {
+            font-weight: bold;
+            color: #333333;
+        }
+
     </style>
 </head>
 <body>
@@ -13,37 +51,50 @@
     <!-- Weather data will be dynamically updated here -->
 </div>
 
+<form id="city-form">
+    <label for="city">Enter City:</label>
+    <input type="text" id="city" name="city" required>
+    <button type="submit">Get Weather</button>
+</form>
+
 <script>
     const weatherContainer = document.getElementById('weather-container');
     const socket = new WebSocket('ws://localhost:3000');
 
-    socket.onopen = () => {
-        console.log('Connected to WebSocket server');
-    };
-
-    socket.onmessage = (event) => {
-        const weatherData = JSON.parse(event.data);
-        renderWeatherData(weatherData.current);
-    };
-
-    socket.onclose = () => {
-        console.log('Disconnected from WebSocket server');
-    };
-
     const renderWeatherData = (currentWeather) => {
-        const { temp_c, condition } = currentWeather;
-
         const weatherCard = document.createElement('div');
         weatherCard.classList.add('weather-card');
         weatherCard.innerHTML = `
             <h2>Current Weather</h2>
-            <p>Temperature: ${temp_c}°C</p>
-            <p>Condition: ${condition.text}</p>
+            <h3>${currentWeather.location.name}</h3>
+            <p>Temperature: ${currentWeather.current.temp_c}°C</p>
+            <p>Condition: ${currentWeather.current.condition.text}</p>
+            <img src="${currentWeather.current.condition.icon}" alt="Weather icon" />
+            <p>Heure Locale : ${currentWeather.location.localtime}</p>
         `;
-
+        weatherCard.id = `weather-${currentWeather.location.name}`;
         weatherContainer.innerHTML = ''; // Clear previous weather data
         weatherContainer.appendChild(weatherCard);
     };
+
+    socket.onmessage = (event) => {
+        const weatherData = JSON.parse(event.data);
+        renderWeatherData(weatherData);
+    };
+    const cityForm = document.getElementById('city-form');
+    cityForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const cityInput = document.getElementById('city');
+        const city = cityInput.value.trim();
+        if (city) {
+            try {
+                socket.send(city); // Send the city name to the server
+            } catch (error) {
+                console.error('Error sending city data:', error);
+            }
+            cityInput.value = ''; // Clear the input field after sending
+        }
+    });
 </script>
 
 </body>
