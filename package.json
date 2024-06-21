@@ -1,0 +1,14 @@
+{
+  "name": "kafka-project-chocolatine",
+  "version": "1.0.0",
+  "description": "Projet Kafka Metrics",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chocolatine",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^5.5.2"
+  }
+}
