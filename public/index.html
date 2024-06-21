@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <style>
+        /* CSS styles for your UI */
+    </style>
+</head>
+<body>
+<div id="weather-container">
+    <!-- Weather data will be dynamically updated here -->
+</div>
+
+<script>
+    const weatherContainer = document.getElementById('weather-container');
+    const socket = new WebSocket('ws://localhost:3000');
+
+    socket.onopen = () => {
+        console.log('Connected to WebSocket server');
+    };
+
+    socket.onmessage = (event) => {
+        const weatherData = JSON.parse(event.data);
+        renderWeatherData(weatherData.current);
+    };
+
+    socket.onclose = () => {
+        console.log('Disconnected from WebSocket server');
+    };
+
+    const renderWeatherData = (currentWeather) => {
+        const { temp_c, condition } = currentWeather;
+
+        const weatherCard = document.createElement('div');
+        weatherCard.classList.add('weather-card');
+        weatherCard.innerHTML = `
+            <h2>Current Weather</h2>
+            <p>Temperature: ${temp_c}°C</p>
+            <p>Condition: ${condition.text}</p>
+        `;
+
+        weatherContainer.innerHTML = ''; // Clear previous weather data
+        weatherContainer.appendChild(weatherCard);
+    };
+</script>
+
+</body>
+</html>

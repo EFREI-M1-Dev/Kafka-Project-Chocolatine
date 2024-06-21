@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .weather-card {
+            background-color: #fff;
+            width: 300px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .weather-card h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .weather-card p {
+            margin: 5px 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div class="weather-card" id="weather-container">
+    <!-- Weather data will be dynamically added here -->
+</div>
+
+<script>
+    const weatherContainer = document.getElementById('weather-container');
+
+    const fetchWeatherData = async () => {
+        try {
+            const response = await fetch('/api/weather'); // Endpoint pour récupérer les données météo
+            if (!response.ok) {
+                throw new Error('Failed to fetch weather data');
+            }
+            const weatherData = await response.json();
+            renderWeatherData(weatherData); // Fonction pour afficher les données météo
+        } catch (error) {
+            console.error('Error fetching weather data:', error);
+        }
+    };
+
+    const renderWeatherData = (weatherData) => {
+        const { current } = weatherData;
+
+        const weatherCard = document.createElement('div');
+        weatherCard.classList.add('weather-card');
+        weatherCard.innerHTML = `
+                <h2>${weatherData.location.name}</h2>
+                <p>Temperature: ${current.temp_c}°C</p>
+                <p>Condition: ${current.condition.text}</p>
+                <p>Wind: ${current.wind_kph} km/h ${current.wind_dir}</p>
+                <p>Humidity: ${current.humidity}%</p>
+                <p>Last updated: ${current.last_updated}</p>
+            `;
+
+        weatherContainer.appendChild(weatherCard);
+    };
+
+    // Appeler fetchWeatherData() au chargement de la page pour récupérer et afficher les données météo
+    fetchWeatherData();
+</script>
+</body>
+</html>
