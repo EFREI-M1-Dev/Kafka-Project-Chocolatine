@@ -73,6 +73,6 @@ export const sendWeatherData = async (city: string, kafkaProducers: { [p: string
 const startWeatherUpdates = (city: string, kafkaProducers: { [p: string]: Producer }, kafkaTopic: { topic: string }) => {
     intervals[city] = setInterval(async () => {
         await sendWeatherData(city, kafkaProducers, kafkaTopic);
-    }, 5000);
+    }, 1500);
     consola.success(`Started weather updates for ${city}`);
 };

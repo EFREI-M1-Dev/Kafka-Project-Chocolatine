@@ -6,19 +6,24 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<form id="city-form">
-    <label for="city">Entrer une ville :</label>
-    <input type="text" id="city" name="city" required>
-    <button type="submit">Météo-moi ça</button>
-</form>
+<div class="container">
+    <form id="city-form">
+        <label for="city">Entrer une ville :</label>
+        <input type="text" id="city" name="city" required>
+        <button type="submit">Météo-moi ça</button>
+    </form>
 
-<div id="weather-container">
-    <!-- Weather data will be dynamically updated here -->
+    <div id="weather-container">
+        <!-- Weather data will be dynamically updated here -->
+    </div>
+
+    <audio id="search-sound" src="/sound.mp3"></audio>
 </div>
 
 <script>
     const weatherContainer = document.getElementById('weather-container');
     const socket = new WebSocket('ws://localhost:3000');
+    const searchSound = document.getElementById('search-sound');
 
     const renderWeatherData = (currentWeather) => {
         const existingCard = document.getElementById(`weather-${currentWeather.location.name}`);
@@ -60,6 +65,7 @@
         const city = cityInput.value.trim();
         if (city) {
             try {
+                searchSound.play();
                 socket.send(city);
             } catch (error) {
                 console.error('Error sending city data:', error);
