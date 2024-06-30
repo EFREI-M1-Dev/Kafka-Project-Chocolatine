@@ -1,11 +1,21 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
     margin: 0;
+    background-image: url("/nounours.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: #333333;
+}
+
+#weather-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 20px;
 }
 
 .weather-card {
@@ -36,4 +46,44 @@ body {
 .weather-info p strong {
     font-weight: bold;
     color: #333333;
+}
+
+#city-form {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin: 20px 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+}
+
+#city-form label {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+#city-form input {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+#city-form button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007BFF;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#city-form button:hover {
+    background-color: #0056b3;
 }
